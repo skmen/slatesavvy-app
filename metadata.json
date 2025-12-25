@@ -1,0 +1,33 @@
+{
+  "name": "SlateSavvy",
+  "description": "Offline-first daily fantasy sports slate review tool. Load projections and lineups from local files to analyze, filter, and export.",
+  "requestFramePermissions": [],
+  "contestDefaults": {
+    "presets": [
+      {
+        "name": "Quarter Jukebox",
+        "site": "DraftKings",
+        "entryFee": 0.25,
+        "fieldSize": 4756,
+        "maxEntries": 20,
+        "rakePct": 0.159
+      },
+      {
+        "name": "Milly Maker",
+        "site": "DraftKings",
+        "entryFee": 20,
+        "fieldSize": 200000,
+        "maxEntries": 150,
+        "rakePct": 0.16
+      },
+      {
+        "name": "Single Entry (mid)",
+        "site": "DraftKings",
+        "entryFee": 12,
+        "fieldSize": 2500,
+        "maxEntries": 1,
+        "rakePct": 0.15
+      }
+    ]
+  }
+}
