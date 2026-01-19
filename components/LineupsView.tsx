@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Lineup, ContestState, Player, SlateStats, GameInfo } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -58,14 +59,14 @@ const RiskIndicator: React.FC<{ lineup: Lineup }> = ({ lineup }) => {
   const isLow = riskScore < 30;
 
   return (
-    <div className="flex items-center justify-between py-2 px-4 bg-black/20 rounded-xl border border-gray-800/50">
+    <div className="flex items-center justify-between py-2 px-4 bg-black/20 rounded-xl border border-gray-800/50" title="Simulated equity drop if players miss minutes projections.">
       <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Minutes Risk</span>
       <div className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase border ${
         isHigh ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
         isLow ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
         'bg-amber-500/10 text-amber-400 border-amber-500/20'
       }`}>
-        {isHigh ? 'High Volatility' : isLow ? 'Safe Floor' : 'Moderate'}
+        {isHigh ? 'Volatile' : isLow ? 'Safe' : 'Moderate'}
       </div>
     </div>
   );
@@ -315,9 +316,9 @@ export const LineupsView: React.FC<Props> = ({
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="font-extrabold text-3xl uppercase text-gray-100 tracking-tight">
-                  LINEUP #{String(index + 1).padStart(3, '0')}
+                  ROSTER #{String(index + 1).padStart(3, '0')}
                 </h3>
-                <div className="text-[10px] font-bold font-mono text-gray-500 uppercase tracking-widest mt-1 opacity-70">Node: {lineup.id}</div>
+                <div className="text-[10px] font-bold font-mono text-gray-500 uppercase tracking-widest mt-1 opacity-70">Roster_Node: {lineup.id}</div>
               </div>
               <div className="flex flex-col items-end gap-2">
                  <div className="flex gap-4 font-mono text-sm font-bold bg-black/40 px-4 py-1.5 rounded-xl border border-gray-800">
@@ -362,7 +363,7 @@ export const LineupsView: React.FC<Props> = ({
                 <div className="bg-charcoal/60 p-5 rounded-[1.5rem] border border-gray-800 shadow-xl space-y-4">
                     <div className="grid grid-cols-5 gap-2 text-center">
                        <div className="space-y-1">
-                          <div className="text-[8px] font-bold text-gray-500 uppercase tracking-tight">Mean</div>
+                          <div className="text-[8px] font-bold text-gray-500 uppercase tracking-tight">Mean Proj</div>
                           <div className="text-xs font-extrabold text-white font-mono leading-none">{(lineup.simEV ?? lineup.totalProjection).toFixed(1)}</div>
                        </div>
                        <div className="space-y-1">
@@ -374,11 +375,11 @@ export const LineupsView: React.FC<Props> = ({
                           <div className="text-xs font-extrabold text-emerald-400 font-mono leading-none">{(lineup.winProbPct ?? 0).toFixed(2)}%</div>
                        </div>
                        <div className="space-y-1">
-                          <div className="text-[8px] font-bold text-gray-500 uppercase tracking-tight">Own%</div>
+                          <div className="text-[8px] font-bold text-gray-500 uppercase tracking-tight">Total Own%</div>
                           <div className="text-xs font-extrabold text-gray-200 font-mono leading-none">{(lineup.totalOwnership ?? 0).toFixed(1)}%</div>
                        </div>
                        <div className="space-y-1">
-                          <div className="text-[8px] font-bold text-gray-500 uppercase tracking-tight">Lev %</div>
+                          <div className="text-[8px] font-bold text-gray-500 uppercase tracking-tight">GPP Equity</div>
                           <div className="text-xs font-extrabold text-gray-200 font-mono leading-none">{(lineup.top10Pct ?? 0).toFixed(1)}%</div>
                        </div>
                     </div>
@@ -399,7 +400,7 @@ export const LineupsView: React.FC<Props> = ({
                     setTimeout(() => setCopiedId(null), 2000);
                   }}
                 >
-                   {copiedId === lineup.id ? <CheckCircle className="w-5 h-5 text-brand" /> : <Copy className="w-4 h-4" />}
+                   {copiedId === lineup.id ? <CheckCircle className="w-4 h-4 text-brand" /> : <Copy className="w-4 h-4" />}
                    {copiedId === lineup.id ? 'COPIED' : 'COPY_IDS'}
                 </button>
             </div>
@@ -426,13 +427,13 @@ export const LineupsView: React.FC<Props> = ({
         
         <div className="flex justify-between items-center px-2">
            <div className="flex items-center gap-5">
-              <h2 className="text-lg font-bold uppercase tracking-[0.2em] text-gray-500">Roster Stream</h2>
+              <h2 className="text-lg font-bold uppercase tracking-[0.2em] text-gray-500">Physics Tunnel</h2>
               <button 
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 className="flex items-center gap-2 px-5 py-2.5 bg-charcoal-card border border-gray-700 rounded-xl text-xs font-bold uppercase text-gray-400 hover:bg-gray-700 hover:text-white transition-all shadow-md"
               >
                 <Settings className="w-4 h-4" />
-                Params
+                Control_Panel
               </button>
            </div>
            {modifiedLineups.length > 0 && (
@@ -441,7 +442,7 @@ export const LineupsView: React.FC<Props> = ({
                   <button onClick={handlePrev} disabled={activeIndex === 0} className="p-2.5 bg-charcoal-card border border-gray-700 rounded-xl disabled:opacity-20 hover:bg-gray-700 transition-all text-gray-300 active:scale-95"><ChevronLeft className="w-5 h-5" /></button>
                   <div className="flex flex-col items-center justify-center px-4 min-w-[100px]">
                     <span className="font-mono text-xs font-bold text-gray-100">{activeIndex + 1} / {filteredLineups.length}</span>
-                    <span className="text-[8px] font-bold text-gray-600 uppercase tracking-widest">Active Index</span>
+                    <span className="text-[8px] font-bold text-gray-600 uppercase tracking-widest">Node Index</span>
                   </div>
                   <button onClick={handleNext} disabled={activeIndex === filteredLineups.length - 1} className="p-2.5 bg-charcoal-card border border-gray-700 rounded-xl disabled:opacity-20 hover:bg-gray-700 transition-all text-gray-300 active:scale-95"><ChevronRight className="w-5 h-5" /></button>
                 </div>
@@ -462,16 +463,16 @@ export const LineupsView: React.FC<Props> = ({
               <div className="bg-brand/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-10 border border-brand/20">
                 <Play className="w-12 h-12 text-brand" />
               </div>
-              <h3 className="text-3xl font-extrabold mb-4 uppercase tracking-tight text-white">System Standby</h3>
-              <p className="text-gray-500 mb-12 max-w-sm mx-auto text-lg leading-relaxed">Upload optimized rosters to begin deep-leverage simulation and win probability modeling.</p>
+              <h3 className="text-3xl font-extrabold mb-4 uppercase tracking-tight text-white">Field Test Your Lineup</h3>
+              <p className="text-gray-500 mb-12 max-w-sm mx-auto text-lg leading-relaxed">Don't guess. Run your roster through the SlateSim Engine to see its true win probability against 20,000 simulated opponents.</p>
               {isAdmin ? (
                 <label className="cursor-pointer bg-brand hover:bg-brand-hover text-charcoal px-14 py-6 rounded-[2rem] font-extrabold uppercase tracking-[0.2em] text-sm transition-all shadow-2xl inline-block active:scale-95">
-                    INITIALIZE SIM
+                    RUN SIMULATION
                     <input type="file" className="hidden" accept=".csv" onChange={handleUpload} />
                 </label>
               ) : (
                 <p className="text-brand font-bold uppercase text-xs tracking-[0.3em] border border-brand/20 p-8 rounded-3xl bg-brand/5">
-                   Restricted: Protocol clearance required.
+                   Access Restricted: Administrator Clearance Required.
                 </p>
               )}
            </div>
@@ -514,7 +515,7 @@ export const LineupsView: React.FC<Props> = ({
             {isAdmin && (
               <div className="flex justify-center -mt-4">
                 <label className="text-[10px] font-bold uppercase text-gray-600 hover:text-brand cursor-pointer flex items-center gap-2 transition-colors tracking-[0.2em]">
-                  <RefreshCw className="w-3.5 h-3.5" /> RE-INITIALIZE DATASTREAM
+                  <RefreshCw className="w-3.5 h-3.5" /> RE-INITIALIZE SIM_CORE
                   <input type="file" className="hidden" accept=".csv" onChange={handleUpload} />
                 </label>
               </div>
@@ -553,7 +554,7 @@ export const LineupsView: React.FC<Props> = ({
                 <input 
                   autoFocus
                   type="text" 
-                  placeholder="Scan player identities..." 
+                  placeholder="Scan baseline identities..." 
                   value={playerSearch}
                   onChange={(e) => setPlayerSearch(e.target.value)}
                   className="w-full bg-charcoal border border-gray-800 rounded-[1.5rem] py-5 pl-16 pr-8 text-lg font-bold text-white placeholder:text-gray-700 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all font-mono"

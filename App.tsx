@@ -40,7 +40,7 @@ const IntegrityFooter: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           <a href="#" className="text-brand hover:underline">Verify</a>
-          <a href="#" className="hover:text-gray-300">Terminal v4.0.7</a>
+          <a href="#" className="hover:text-gray-300">SlateSim v4.0.7</a>
         </div>
       </div>
     </footer>
@@ -214,7 +214,7 @@ const AppContent: React.FC = () => {
             <div className="flex flex-col">
               <h1 className="font-black text-xl tracking-tighter leading-none italic uppercase">SLATE<span className="text-brand">SIM</span></h1>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest font-mono">Terminal Active</span>
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest font-mono">Simulation Terminal</span>
               </div>
             </div>
           </div>
@@ -233,8 +233,8 @@ const AppContent: React.FC = () => {
             <div {...getRootProps()} className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer ${isDragActive ? 'border-brand bg-brand/5' : 'border-gray-800 hover:border-brand bg-charcoal-card'}`}>
               <input {...getInputProps()} />
               <div className="bg-brand/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-brand/20"><Database className="w-8 h-8 text-brand" /></div>
-              <p className="font-bold text-lg mb-1 uppercase tracking-tight italic">Upload Lineup Pack (JSON)</p>
-              <p className="text-xs text-gray-500 font-mono italic tracking-tighter">Reference core metadata</p>
+              <p className="font-bold text-lg mb-1 uppercase tracking-tight italic">Initialize Physics Core (JSON)</p>
+              <p className="text-xs text-gray-500 font-mono italic tracking-tighter">Upload authoritative baseline and field metadata</p>
             </div>
           </div>
         )}
@@ -261,9 +261,9 @@ const AppContent: React.FC = () => {
 
       <nav className="fixed bottom-0 left-0 right-0 bg-charcoal-card border-t border-gray-800 px-6 py-2 pb-safe z-40 shadow-2xl backdrop-blur-md">
            <div className="flex justify-around items-center max-w-lg mx-auto">
-              <NavItem label="Lineups" icon={Layers} targetView={ViewState.LINEUPS} />
-              <NavItem label="Projections" icon={Users} targetView={ViewState.PROJECTIONS} />
-              <NavItem label="Leverage" icon={BarChart2} targetView={ViewState.DIAGNOSTICS} />
+              <NavItem label="Simulation" icon={Layers} targetView={ViewState.LINEUPS} />
+              <NavItem label="Baseline" icon={Users} targetView={ViewState.PROJECTIONS} />
+              <NavItem label="Stress Test" icon={BarChart2} targetView={ViewState.DIAGNOSTICS} />
            </div>
       </nav>
 
@@ -271,7 +271,7 @@ const AppContent: React.FC = () => {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] backdrop-blur-md">
             <div className="bg-charcoal-card p-6 rounded-xl shadow-2xl flex flex-col items-center border border-gray-800">
                 <div className="w-8 h-8 border-4 border-brand border-t-transparent animate-spin mb-4"></div>
-                <p className="font-black text-xs uppercase tracking-[0.2em] text-brand animate-pulse">Running Simulation...</p>
+                <p className="font-black text-xs uppercase tracking-[0.2em] text-brand animate-pulse">Running Field Stress Test...</p>
             </div>
         </div>
       )}

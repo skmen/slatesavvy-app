@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ContestDerived, ContestInput, SlateStats, GameInfo } from '../types';
 import { formatMoney, formatPct } from '../utils/contest';
@@ -33,7 +34,7 @@ export const ContestSummary: React.FC<Props> = ({
     const extremeRake = derived.rakePct > 0.18; 
     const tinyField = input.fieldSize < 50; 
     if (hasManyWarnings || extremeRake || tinyField) return { status: 'WARN', label: 'Caution', color: 'amber' };
-    return { status: 'PASS', label: 'Ready', color: 'emerald' };
+    return { status: 'PASS', label: 'Engine Ready', color: 'emerald' };
   };
 
   const verdict = getVerdict();
@@ -50,8 +51,8 @@ export const ContestSummary: React.FC<Props> = ({
     <div className="space-y-4">
         {hasAutoLoadedReferencePack && (slateStats?.totalPlayers || 0) > 0 && (
             <div className="flex items-center justify-between px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900 rounded-lg text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest animate-in fade-in slide-in-from-top-1 duration-500">
-                <span className="flex items-center gap-1.5"><Database className="w-3 h-3" />Offline Pack Active: {packDisplayName}</span>
-                <span className="flex gap-4"><span>Players: {slateStats?.totalPlayers || 0}</span><span>Lineups: {slateStats?.totalLineups || 0}</span></span>
+                <span className="flex items-center gap-1.5"><Database className="w-3 h-3" />Sim Core Active: {packDisplayName}</span>
+                <span className="flex gap-4"><span>Nodes: {slateStats?.totalPlayers || 0}</span><span>Rosters: {slateStats?.totalLineups || 0}</span></span>
             </div>
         )}
 
@@ -68,11 +69,11 @@ export const ContestSummary: React.FC<Props> = ({
             <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
                     <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-red-600 dark:text-red-400"><Percent className="w-5 h-5" /></div>
-                    <div><div className="text-xs text-gray-500 uppercase font-medium">Field Loss (Rake)</div><div className="font-bold text-cloud-text dark:text-white">{formatPct(derived.rakePct)}</div></div>
+                    <div><div className="text-xs text-gray-500 uppercase font-medium">Field Size (Opponents)</div><div className="font-bold text-cloud-text dark:text-white">{(input.fieldSize || 0).toLocaleString()} Simulated</div></div>
                 </div>
                 <div className="flex items-start gap-3">
                     <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-blue-600 dark:text-blue-400"><Users className="w-5 h-5" /></div>
-                    <div><div className="text-xs text-gray-500 uppercase font-medium">Your Coverage</div><div className="font-bold text-cloud-text dark:text-white">{formatPct(derived.portfolioCoveragePct, 3)}</div></div>
+                    <div><div className="text-xs text-gray-500 uppercase font-medium">Portfolio Penetration</div><div className="font-bold text-cloud-text dark:text-white">{formatPct(derived.portfolioCoveragePct, 3)}</div></div>
                 </div>
                 <div className="flex items-start gap-3">
                     <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg text-emerald-600 dark:text-emerald-400"><Wallet className="w-5 h-5" /></div>
@@ -82,10 +83,10 @@ export const ContestSummary: React.FC<Props> = ({
         </div>
 
         <div className="bg-white dark:bg-charcoal-card p-4 rounded-xl shadow-sm border border-cloud-darker dark:border-charcoal-card">
-            <h4 className="font-bold text-sm flex items-center gap-2 mb-3"><PlayCircle className="w-4 h-4 text-brand" />Games Today</h4>
+            <h4 className="font-bold text-sm flex items-center gap-2 mb-3"><PlayCircle className="w-4 h-4 text-brand" />Active Slate Matchups</h4>
             {games && games.length > 0 ? (
                 <div className="flex flex-wrap gap-2">{games.map(g => (<div key={g.matchupKey} className="px-3 py-1.5 bg-cloud dark:bg-charcoal border border-cloud-darker dark:border-gray-700 rounded-lg text-xs font-bold flex items-center gap-2"><span className="text-gray-500 dark:text-gray-400">{g.teamA}</span><span className="text-[10px] text-gray-300 dark:text-gray-600 font-normal uppercase">vs</span><span className="text-gray-500 dark:text-gray-400">{g.teamB}</span></div>))}</div>
-            ) : (<p className="text-xs text-gray-400 italic">No game data detected.</p>)}
+            ) : (<p className="text-xs text-gray-400 italic">No environment data detected.</p>)}
         </div>
     </div>
   );

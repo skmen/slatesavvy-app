@@ -38,14 +38,14 @@ export const SplashLogin: React.FC = () => {
           </h1>
           <div className="flex flex-col items-center gap-2">
             <p className="text-brand font-bold tracking-[0.2em] uppercase text-sm md:text-lg">
-              Field Test Your Lineup
+              Welcome to SlateSim Engine
             </p>
             <div className="h-1 w-24 bg-brand/20 rounded-full overflow-hidden">
               <div className="h-full bg-brand w-1/2 animate-[progress_2s_ease-in-out_infinite]" />
             </div>
           </div>
           <p className="text-gray-500 text-xs font-medium uppercase tracking-widest mt-8 opacity-60">
-            Initializing Physics Engine v4.0.7
+            Initializing Simulation Core v4.0.7
           </p>
         </div>
 
