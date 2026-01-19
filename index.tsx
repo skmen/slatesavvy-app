@@ -78,8 +78,13 @@ const NativeURL = window.URL;
 // @ts-ignore
 window.URL = function(url: string | URL, base?: string | URL) {
   let finalBase = base;
-  if (!finalBase && typeof url === 'string' && (url.startsWith('/') || !url.includes(':'))) {
-    finalBase = CURRENT_APP_ORIGIN;
+  if (!finalBase && typeof url === 'string') {
+    const s = url;
+    // Check for a scheme at the start of the string, not just the presence of ':'
+    const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(s);
+    if (s.startsWith('/') || !hasScheme) {
+      finalBase = CURRENT_APP_ORIGIN;
+    }
   }
 
   try {
@@ -105,10 +110,25 @@ Object.getOwnPropertyNames(NativeURL).forEach(prop => {
 // --- SHIM END ---
 
 /**
- * 2. REDIRECT NORMALIZATION
- * Ensures all navigations stay within the valid AI Studio host and preserve full path.
+ * 2. REDIRECT & NAVIGATION HELPERS
  */
+
+const isNonNavigationTarget = (to: string): boolean => {
+  const s = (to || "").trim();
+  if (!s) return false;
+  // Block obvious non-routes / data payloads.
+  if (s.startsWith("data:") || s.startsWith("blob:")) return true;
+  if (s.startsWith("javascript:")) return true;
+  if (s.includes("application/javascript")) return true;
+  if (s.includes("base64,")) return true;
+  // Block raw mime-type-ish strings that are not full URLs.
+  if (/^[a-zA-Z]+\/[a-zA-Z0-9.+-]+/.test(s) && !s.startsWith("http")) return true;
+  return false;
+};
+
 const normalizeRedirect = (to: string): string => {
+  if (isNonNavigationTarget(to)) return SAFE_DEFAULT_URL;
+  
   // Default to the safe entry URL to preserve the full path.
   if (!to || to === "/") return SAFE_DEFAULT_URL;
   
@@ -127,7 +147,8 @@ const normalizeRedirect = (to: string): string => {
     
     // Rewrite localhost, blob, or null origins
     if (u.hostname === "localhost" || u.protocol === "blob:" || u.origin === "null") {
-      return CURRENT_APP_ORIGIN + u.pathname + u.search + u.hash;
+      const path = u.pathname.startsWith("/") ? u.pathname : ("/" + u.pathname);
+      return CURRENT_APP_ORIGIN + path + u.search + u.hash;
     }
     
     // Prevent navigating to a different origin than the app's host
@@ -158,6 +179,12 @@ function safeOrigin(href: string): string {
  * aistudio.google.com or other cross-origin destinations require breakout.
  */
 const handleNavigation = (to: string) => {
+  // CRITICAL: Block navigation to non-URL targets like data URIs.
+  if (isNonNavigationTarget(to)) {
+    console.log("Ignoring non-navigation target:", to.slice(0, 80));
+    return;
+  }
+
   if (to.includes('CLERK-ROUTER') || to.includes('/v1/')) return;
 
   const target = normalizeRedirect(to);
