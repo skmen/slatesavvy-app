@@ -9,40 +9,52 @@ if (!rootElement) {
 }
 
 /**
- * Robust lookup for Clerk Publishable Key across different environments.
- * Checks process.env (Node/Vite/Deno), import.meta.env (Vite), and window (Browser Global).
+ * Retrieves the Clerk Publishable Key.
+ * In this environment, we rely on process.env for injected variables.
  */
 const getPublishableKey = (): string => {
-  const keyName = 'VITE_CLERK_PUBLISHABLE_KEY';
-  const fallbackKeyName = 'CLERK_PUBLISHABLE_KEY';
+  const key = process.env.VITE_CLERK_PUBLISHABLE_KEY || 
+              process.env.CLERK_PUBLISHABLE_KEY || 
+              "pk_test_bG92ZWQtY291Z2FyLTYuY2xlcmsuYWNjb3VudHMuZGV2JA";
 
-  const envKey = (typeof process !== 'undefined' ? process.env?.[keyName] : undefined) ||
-                 (typeof process !== 'undefined' ? process.env?.[fallbackKeyName] : undefined) ||
-                 (import.meta as any).env?.[keyName] ||
-                 (import.meta as any).env?.[fallbackKeyName] ||
-                 (window as any)?.[keyName] ||
-                 "";
-
-  return envKey;
+  if (!key) {
+    console.warn("Clerk Publishable Key is missing. Authentication features may not work.");
+  }
+  
+  return key;
 };
 
 const PUBLISHABLE_KEY = getPublishableKey();
-
-if (!PUBLISHABLE_KEY) {
-  console.warn(
-    "Clerk Publishable Key is missing. Please set VITE_CLERK_PUBLISHABLE_KEY in your environment variables. " +
-    "Authentication features will be disabled until a valid key is provided."
-  );
-}
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     {/* 
-      We wrap the app even if the key is missing to allow the UI to render. 
-      Clerk components will handle missing keys gracefully or show internal errors.
+      We provide custom router handlers to the ClerkProvider. 
+      This is crucial for preventing Clerk's internal "virtual router" from attempting 
+      to construct URLs using internal virtual paths (like /CLERK-ROUTER/VIRTUAL/...), 
+      which can fail in environments where the URL constructor requires absolute paths.
     */}
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider 
+      publishableKey={PUBLISHABLE_KEY}
+      routerPush={(to) => {
+        // Ignore internal virtual routing paths to prevent URL constructor crashes
+        if (to.startsWith('/CLERK-ROUTER/')) return;
+        
+        // Only handle real external navigations
+        if (to.startsWith('http')) {
+          window.location.href = to;
+        }
+      }}
+      routerReplace={(to) => {
+        // Ignore internal virtual routing paths
+        if (to.startsWith('/CLERK-ROUTER/')) return;
+
+        if (to.startsWith('http')) {
+          window.location.replace(to);
+        }
+      }}
+    >
       <App />
     </ClerkProvider>
   </React.StrictMode>
