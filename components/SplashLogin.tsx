@@ -1,7 +1,7 @@
 
 import React, { useState, FormEvent } from 'react';
-import { SignInButton, SignUpButton } from "@clerk/clerk-react";
-import { LogIn, UserPlus, Cpu, BarChart2, Zap, Layers, Send, AlertTriangle, CheckCircle } from 'lucide-react';
+import { SignInButton } from "@clerk/clerk-react";
+import { LogIn, Cpu, BarChart2, Zap, Layers, Send, AlertTriangle, CheckCircle } from 'lucide-react';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -70,15 +70,10 @@ export const SplashLogin: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <SignInButton mode="modal">
-              <button className="px-4 py-2 text-charcoal-text text-xs font-bold uppercase hover:bg-white/5 rounded-lg transition-colors flex items-center gap-2">
+              <button className="px-4 py-2 bg-brand hover:bg-brand-hover text-charcoal text-xs font-black uppercase rounded-lg transition-colors flex items-center gap-2">
                 <LogIn className="w-4 h-4" /> Log In
               </button>
             </SignInButton>
-            <SignUpButton mode="modal">
-              <button className="px-4 py-2 bg-brand hover:bg-brand-hover text-charcoal text-xs font-black uppercase rounded-lg transition-colors flex items-center gap-2">
-                <UserPlus className="w-4 h-4" /> Sign Up
-              </button>
-            </SignUpButton>
           </div>
         </div>
       </header>

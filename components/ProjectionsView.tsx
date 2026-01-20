@@ -140,7 +140,8 @@ export const ProjectionsView: React.FC<Props> = ({ players, referencePlayers, be
   const formatValue = (val: any) => {
     if (val === undefined || val === null) return '--';
     if (typeof val === 'number') return val % 1 === 0 ? val.toLocaleString() : val.toFixed(2);
-    const num = parseFloat(val);
+    // FIX: The error "Argument of type 'unknown' is not assignable to parameter of type 'string'" is likely from this line. Coercing `val` to a string before passing to `parseFloat`.
+    const num = parseFloat(String(val));
     if (!isNaN(num) && String(num) === String(val).trim().replace(/,/g, '')) return num % 1 === 0 ? num.toLocaleString() : num.toFixed(2);
     return String(val);
   };
