@@ -12,7 +12,7 @@ interface AuthContextType {
 const ROLE_PERMISSIONS: Record<Role, Entitlement[]> = {
   admin: ['run_sim', 'view_diagnostics', 'export_data', 'admin_panel', 'view_projections'],
   'beta-user': ['run_sim', 'view_diagnostics', 'export_data', 'view_projections'],
-  user: ['view_projections']
+  user: ['view_projections', 'view_diagnostics']
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
